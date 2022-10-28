@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use DateTime;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Date;
 
 class Task extends Model
 {
@@ -19,8 +21,7 @@ class Task extends Model
      */
 
 
-
     public function getCategory(){
-        return $this->hasOne(Category::class, 'id', 'category_id');
+        return $this->hasOne(Category::class, 'tasks_category_id_foreign', 'category_id');
     }
 }
