@@ -13,8 +13,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::redirect('/', '/home');
+Route::redirect('/', '/tasks');
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/tasks', [App\Http\Controllers\HomeController::class, 'index'])->name('index');
+Route::get('/tasks/create', [App\Http\Controllers\HomeController::class, 'create'])->name('create_task');
