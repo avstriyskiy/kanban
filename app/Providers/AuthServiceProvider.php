@@ -4,6 +4,9 @@ namespace App\Providers;
 
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
+use App\Models\Category;
+use App\Models\User;
+
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -25,6 +28,12 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        //
+        Gate::define('view-tasks', function (User $user, Category $category){
+            return $category->id === $user->category_id;
+        });
+
+        Gate::define('update-tasks', function (User $user, Category $category){
+            return $category->id === $user->category_id;
+        });
     }
 }

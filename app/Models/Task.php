@@ -20,6 +20,9 @@ class Task extends Model
      * @property $category_id
      */
 
+    protected $fillable = [
+        'name', 'description', 'deadline', 'status', 'category_id'
+    ];
 
     public function getCategory(){
         return $this->hasOne(Category::class, 'tasks_category_id_foreign', 'category_id');
