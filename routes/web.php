@@ -17,4 +17,5 @@ use Illuminate\Support\Facades\Route;
 Auth::routes();
 
 Route::resource('tasks', TaskController::class);
+Route::put('/tasks/{task}', [TaskController::class, 'change'])->name('tasks.change');
 Route::redirect('/', route('tasks.index'));

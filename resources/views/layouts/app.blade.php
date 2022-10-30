@@ -76,6 +76,9 @@
         </nav>
 
         <main class="py-4">
+            <div class="text-xxl-center">
+                <h2>@yield('title')</h2>
+            </div>
             <div class="container">
                 @yield('content')
             </div>
