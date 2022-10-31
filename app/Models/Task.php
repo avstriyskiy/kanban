@@ -21,7 +21,7 @@ class Task extends Model
      */
 
     protected $fillable = [
-        'name', 'description', 'deadline', 'status', 'category_id'
+        'name', 'description', 'deadline', 'status', 'category_id', 'has_files'
     ];
 
     public function getCategory(){

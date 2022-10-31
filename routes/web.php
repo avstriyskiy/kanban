@@ -18,5 +18,6 @@ Auth::routes();
 
 Route::resource('tasks', TaskController::class);
 Route::put('/tasks/{task}', [TaskController::class, 'change'])->name('tasks.change');
+Route::delete('/tasks/{task}/delete', [TaskController::class, 'delete'])->name('tasks.delete');
 //Route::put('/tasks/{task}', [TaskController::class, 'update'])->name('tasks.update');
 Route::redirect('/', route('tasks.index'));

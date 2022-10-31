@@ -52,7 +52,7 @@
                                 </svg>
                             </a>
                         </form>
-                        <div class="dropdown">
+                        <div class="dropdown mt-2">
                             <button class="btn btn-outline-dark dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 Поменять статус выполнения
                             </button>
