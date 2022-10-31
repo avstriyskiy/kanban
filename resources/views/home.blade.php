@@ -65,7 +65,7 @@
                                             <option>{{ Home::getStatusName($t) }}</option>
                                         @endfor
                                     </select>
-                                    <button type="submit" class="btn btn-outline-dark">Принять</button>
+                                    <button type="submit" class="btn btn-outline-dark mt-2">Принять</button>
                                 </form>
                             </ul>
                         </div>

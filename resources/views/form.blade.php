@@ -10,7 +10,7 @@
         @endif
         @csrf
         @isset($task)
-            @method('PUT')
+            @method('PATCH')
         @endisset
         <div class="mb-3">
             <label for="name" class="form-label">Название</label>

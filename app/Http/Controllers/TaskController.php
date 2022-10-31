@@ -46,13 +46,13 @@ class TaskController extends Controller
     public function store(Request $request)
     {
 //        dd($request->all());
-        $categoryId = Category::where('name', '=', $request['category_name'])->first()->id;
-        $deadline = new DateTime($request['deadline']);
+        $categoryId = Category::where('name', '=', request()->category_name)->first()->id;
+        $deadline = new DateTime(request()->deadline);
         $deadline = $deadline->format('Y-m-d h:i:s');
 //        dd($request->only(['name', 'description', 'deadline' , 'category_name']));
         Task::create([
-                'name' => $request['name'],
-                'description' => $request['description'],
+                'name' => request()->name,
+                'description' => request()->description,
                 'deadline' => $deadline,
                 'status' => 1,
                 'category_id' => $categoryId,
