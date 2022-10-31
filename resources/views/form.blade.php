@@ -4,10 +4,11 @@
     <a href="{{ route('tasks.index') }}" class="btn btn-outline-dark mb-3">Вернуться к списку задач</a>
     <form method="POST"
         @if(isset($task))
-            action="{{ route('tasks.update', $task) }}">
+            action="{{ route('tasks.update', $task) }}"
         @else
-            action="{{ route('tasks.store') }}">
+            action="{{ route('tasks.store') }}"
         @endif
+        enctype="multipart/form-data">
         @csrf
         @isset($task)
             @method('PATCH')
@@ -54,7 +55,7 @@
             @endif
         <div class="mb-3">
             <label for="file" class="form-label">Добавить файл к задаче</label>
-            <input class="form-control" type="file" id="file" multiple>
+            <input name="doc" class="form-control" type="file" id="file">
         </div>
         <button type="submit" class="btn btn-outline-dark">Submit</button>
     </form>

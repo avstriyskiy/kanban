@@ -21,15 +21,15 @@
                         <h5>Контрольный срок исполнения:</h5>
                     </div>
                     <div class="col">
-{{--                        @if (Home::isDeadline($task->deadline) == 'today')--}}
-{{--                            <div class="text-bg-warning">--}}
-{{--                        @elseif(Home::isDeadline($task->deadline) == 'yes')--}}
-{{--                            <div class="text-bg-success">--}}
-{{--                        @else--}}
-{{--                            <div class="text-bg-danger">--}}
-{{--                        @endif--}}
-{{--                                <h5><b>{{ Home::dateFormat($task->deadline) }}</b></h5>--}}
-{{--                            </div>--}}
+                        @if (Home::isDeadline($task->deadline) == 'today')
+                            <div class="text-bg-warning">
+                        @elseif(Home::isDeadline($task->deadline) == 'yes')
+                            <div class="text-dark">
+                        @else
+                            <div class="text-bg-danger">
+                        @endif
+                                <h5><b>{{ Home::dateFormat($task->deadline) }}</b></h5>
+                            </div>
                     </div>
                 </div>
 {{--Конец вывода второй строки--}}
@@ -47,6 +47,14 @@
                     </div>
                     <div class="col">
                         <h5><b>{{ Home::getStatusName($task->status) }}</b></h5>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <h5>Файлы задачи:</h5>
+                    </div>
+                    <div class="col">
+                        <h5><b>Какие-то файлы</b></h5>
                     </div>
                 </div>
             </div>

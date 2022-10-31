@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Task;
+use App\Models\Document;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use DateTime;
 
 class TaskController extends Controller
@@ -45,18 +47,37 @@ class TaskController extends Controller
      */
     public function store(Request $request)
     {
-//        dd($request->all());
+
         $categoryId = Category::where('name', '=', request()->category_name)->first()->id;
         $deadline = new DateTime(request()->deadline);
         $deadline = $deadline->format('Y-m-d h:i:s');
-//        dd($request->only(['name', 'description', 'deadline' , 'category_name']));
-        Task::create([
+        if (request()->hasFile('doc'))
+        {
+            $task = Task::create([
+                    'name' => request()->name,
+                    'description' => request()->description,
+                    'deadline' => $deadline,
+                    'status' => 1,
+                    'category_id' => $categoryId,
+                    'has_files' => 1,
+                ]);
+
+            $file = $request->file('doc')->store('/');
+
+            Document::create([
+                'file_name' => $file,
+                'task_id' => $task->id
+            ]);
+        } else {
+            Task::create([
                 'name' => request()->name,
                 'description' => request()->description,
                 'deadline' => $deadline,
                 'status' => 1,
                 'category_id' => $categoryId,
+                'has_files' => 0,
             ]);
+        }
 
         return redirect()->route('tasks.index');
     }
@@ -98,11 +119,27 @@ class TaskController extends Controller
 
         $deadline = new DateTime($request['deadline']);
         $deadline = $deadline->format('Y-m-d h:i:s');
+        $hasFiles = $task->has_files;
+
+        if (request()->hasFile('doc'))
+        {
+            $file = $request->file('doc')->store('/');
+
+            Document::create([
+                'file_name' => $file,
+                'task_id' => $task->id
+            ]);
+            if ($hasFiles == 0)
+            {
+                $hasFiles = 1;
+            }
+        }
 
         $task->update([
             'name' => $request['name'],
             'description' => $request['description'],
             'deadline' => $deadline,
+            'has_files' => $hasFiles,
         ]);
 
         return redirect()->route('tasks.show', $task->id);
@@ -116,7 +153,15 @@ class TaskController extends Controller
      */
     public function destroy(Task $task)
     {
+        if ($task->has_files == 1)
+        {
+            $files = Document::where('task_id', $task->id)->get();
+            foreach ($files as $file){
+                Document::destroy($file->id);
+            }
+        }
         Task::destroy($task->id);
+
         return redirect()->route('tasks.index');
     }
 
