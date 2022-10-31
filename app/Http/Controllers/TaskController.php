@@ -171,7 +171,7 @@ class TaskController extends Controller
      */
     public function destroy(Task $task)
     {
-        if ($task->has_files == 1)
+        if ($task->has_files >= 1)
         {
             $files = Document::where('task_id', $task->id)->get();
             foreach ($files as $file){
@@ -190,13 +190,16 @@ class TaskController extends Controller
 
         Storage::delete($file->file_name);
         Document::destroy($file->id);
+        $hasFiles = $task->has_files - 1;
+        $task->update([
+            'has_files' => $hasFiles
+        ]);
 
         return redirect()->route('tasks.show', $task->id);
     }
 
     public function change(Request $request, Task $task)
     {
-//        dd($request->all());
         $status = ['Новое' => 1, 'В работе' => 2, 'На проверке' => 3, 'Готово' => 4];
         $statusId = $status[$request['status']];
 
