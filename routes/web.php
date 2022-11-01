@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\TaskController;
 use Illuminate\Support\Facades\Route;
 
@@ -16,8 +17,15 @@ use Illuminate\Support\Facades\Route;
 
 Auth::routes();
 
+// Маршруты для задач
 Route::resource('tasks', TaskController::class);
 Route::put('/tasks/{task}', [TaskController::class, 'change'])->name('tasks.change');
 Route::delete('/tasks/{task}/delete', [TaskController::class, 'delete'])->name('tasks.delete');
-//Route::put('/tasks/{task}', [TaskController::class, 'update'])->name('tasks.update');
+
+// Маршруты для комментариев
+Route::post('/comments/{task}', [CommentController::class, 'create'])->name('comments.create');
+Route::put('/comments/{task}', [CommentController::class, 'update'])->name('comments.update');
+Route::delete('/comments/{comment}', [CommentController::class, 'delete'])->name('comments.delete');
+
+// Redirect to tasks list
 Route::redirect('/', route('tasks.index'));

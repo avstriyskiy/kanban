@@ -11,7 +11,9 @@ use DateTime;
 
 class TaskController extends Controller
 {
-
+    /**
+     *  Make an auth for pages
+     */
     public function __construct()
     {
         $this->middleware('auth');
@@ -52,7 +54,6 @@ class TaskController extends Controller
      */
     public function store(Request $request)
     {
-
         $categoryId = Category::where('name', '=', request()->category_name)->first()->id;
         $deadline = new DateTime(request()->deadline);
         $deadline = $deadline->format('Y-m-d h:i:s');
@@ -86,6 +87,7 @@ class TaskController extends Controller
      */
     public function show(Task $task)
     {
+
         $category = Category::find($task->category_id);
 
         $files = [];
@@ -97,7 +99,9 @@ class TaskController extends Controller
             ];
         }
 
-        return view('show', compact('task', 'category', 'files'));
+        $comments = [];
+
+        return view('show', compact('task', 'category', 'files', 'comments'));
     }
 
     /**
@@ -122,10 +126,6 @@ class TaskController extends Controller
      */
     public function update(Request $request, Task $task)
     {
-
-        $deadline = new DateTime(request()->deadline);
-        $deadline = $deadline->format('Y-m-d h:i:s');
-
         if (request()->hasFile('doc'))
         {
             $fileName = $request->file('doc')->getClientOriginalName();
@@ -136,11 +136,17 @@ class TaskController extends Controller
             ]);
         }
 
-        $task->update([
-            'name' => request()->name,
-            'description' => request()->description,
-            'deadline' => $deadline,
-        ]);
+        if ($request->has('name') || $request->has('deadline') || $request->has('description')){
+
+            $deadline = new DateTime(request()->deadline);
+            $deadline = $deadline->format('Y-m-d h:i:s');
+
+            $task->update([
+                'name' => request()->name,
+                'description' => request()->description,
+                'deadline' => $deadline,
+            ]);
+        }
 
         return redirect()->route('tasks.show', $task->id);
     }
@@ -182,12 +188,12 @@ class TaskController extends Controller
         return redirect()->route('tasks.index');
     }
 
-    public function dateFormat($date){
+    public static function dateFormat($date){
         $date = new DateTime($date);
         return $date->format("d.m.Y H:i");
     }
 
-    public function dateEqual($date): bool
+    public static function dateEqual($date): bool
     {
         $date = new DateTime($date);
         $date = intval($date->format('j'));
@@ -203,7 +209,7 @@ class TaskController extends Controller
         }
     }
 
-    public function isDeadline($deadline)
+    public static function isDeadline($deadline)
     {
         if (TaskController::dateEqual($deadline)){
             return 'today';
@@ -218,12 +224,12 @@ class TaskController extends Controller
         }
     }
 
-    public function getStatusName($status){
+    public static function getStatusName($status){
         $statusName = [1 => 'Новое', 2 => 'В работе', 3 => 'На проверке', 4 => 'Готово'];
         return $statusName[$status];
     }
 
-    public function getStatusNum($status){
+    public static function getStatusNum($status){
         $statusNum = ['Новое' => 1, 'В работе' => 2, 'На проверке' => 3, 'Готово' => 4];
         return $statusNum[$status];
     }
