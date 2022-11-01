@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class UpdateTasksTable extends Migration
+class UpdateDocumentsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,10 @@ class UpdateTasksTable extends Migration
      */
     public function up()
     {
-        Schema::table('tasks', function($table) {
-            $table->integer('has_files');
+        Schema::table('documents', function (Blueprint $table) {
+            $table->morphs('attached');
+            $table->dropForeign('documents_task_id_foreign');
+            $table->dropColumn('task_id');
         });
     }
 
@@ -25,8 +27,8 @@ class UpdateTasksTable extends Migration
      */
     public function down()
     {
-        Schema::table('tasks', function($table) {
-            $table->dropColumn('has_files');
+        Schema::table('documents', function (Blueprint $table) {
+            $table->dropColumn('attached_id', 'attached_type');
         });
     }
 }

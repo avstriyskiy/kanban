@@ -13,4 +13,9 @@ class Document extends Model
     protected $fillable = [
         'file_name', 'task_id'
     ];
+
+    public function attached()
+    {
+        return $this->morphTo();
+    }
 }

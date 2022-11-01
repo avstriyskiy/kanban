@@ -24,7 +24,20 @@ class Task extends Model
         'name', 'description', 'deadline', 'status', 'category_id', 'has_files'
     ];
 
-    public function getCategory(){
-        return $this->hasOne(Category::class, 'tasks_category_id_foreign', 'category_id');
+    public function categories(){
+
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
+     */
+    public function attaches()
+    {
+        return $this->morphMany(Document::class, 'attached');
+    }
+
+    public function comments()
+    {
+        return $this->morphMany(Comment::class, 'commentable');
     }
 }
