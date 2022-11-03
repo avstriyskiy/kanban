@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Task;
 use App\Models\Document;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use DateTime;
@@ -99,7 +100,7 @@ class TaskController extends Controller
             ];
         }
 
-        $comments = [];
+        $comments = $task->comments->sortByDesc('created_at');
 
         return view('show', compact('task', 'category', 'files', 'comments'));
     }
@@ -176,7 +177,14 @@ class TaskController extends Controller
         Storage::delete($file->file_name);
         Document::destroy($file->id);
 
-        return redirect()->route('tasks.show', $task->id);
+        return redirect()->route('tasks.show', $task);
+    }
+
+    public function deleteComments (Request $request, Task $task)
+    {
+        $task->comments()->delete();
+
+        return redirect()->route('tasks.show', $task);
     }
 
     public function change(Request $request, Task $task)
@@ -234,4 +242,9 @@ class TaskController extends Controller
         return $statusNum[$status];
     }
 
+    public static function getUserName($comment)
+    {
+        $user = User::find($comment->user_id);
+        return $user->name;
+    }
 }

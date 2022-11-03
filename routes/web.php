@@ -21,10 +21,11 @@ Auth::routes();
 Route::resource('tasks', TaskController::class);
 Route::put('/tasks/{task}', [TaskController::class, 'change'])->name('tasks.change');
 Route::delete('/tasks/{task}/delete', [TaskController::class, 'delete'])->name('tasks.delete');
+Route::delete('/tasks/{task}/delete-comments', [TaskController::class, 'deleteComments'])->name('tasks.deleteComments');
 
 // Маршруты для комментариев
 Route::post('/comments/{task}', [CommentController::class, 'create'])->name('comments.create');
-Route::put('/comments/{task}', [CommentController::class, 'update'])->name('comments.update');
+Route::patch('/comments/{task}', [CommentController::class, 'update'])->name('comments.update');
 Route::delete('/comments/{comment}', [CommentController::class, 'delete'])->name('comments.delete');
 
 // Redirect to tasks list
