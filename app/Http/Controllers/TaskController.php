@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\TaskOverdue;
 use App\Models\Category;
 use App\Models\Task;
 use App\Models\Document;
 use App\Models\User;
+use App\Notifications\TaskNotification;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use DateTime;
 
@@ -50,6 +53,8 @@ class TaskController extends Controller
      */
     public function create()
     {
+        $task = Task::find(4);
+        Mail::to(User::find(auth()->id()))->send(new TaskOverdue($task));
         // Получаем нужные категории для создания задачи
         $user = User::find(auth()->id());
 
