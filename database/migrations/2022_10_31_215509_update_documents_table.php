@@ -14,9 +14,7 @@ class UpdateDocumentsTable extends Migration
     public function up()
     {
         Schema::table('documents', function (Blueprint $table) {
-            $table->morphs('attached');
-            $table->dropForeign('documents_task_id_foreign');
-            $table->dropColumn('task_id');
+            $table->string('file_url');
         });
     }
 
@@ -28,7 +26,7 @@ class UpdateDocumentsTable extends Migration
     public function down()
     {
         Schema::table('documents', function (Blueprint $table) {
-            $table->dropColumn('attached_id', 'attached_type');
+            $table->dropColumn('file_url');
         });
     }
 }

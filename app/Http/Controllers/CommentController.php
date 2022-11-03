@@ -22,26 +22,10 @@ class CommentController extends Controller
         return redirect()->route('tasks.show', $task);
     }
 
-    public function update(Request $request, Task $task)
-    {
-
-        foreach ($task->comments as $comment){
-            if ($comment->body == $request->body){
-                $task->comments()->update([
-                    'body' => $request->body,
-                ]);
-
-                break;
-            }
-        }
-
-        return redirect()->route('tasks.show', $task->id);
-    }
-
-    public function delete(Request $request, Comment $comment)
+    public function delete(Comment $comment)
     {
         $task = $comment->commentable_id;
-        Comment::destroy($comment->id);
+        $comment->delete();
 
         return redirect()->route('tasks.show', $task);
     }

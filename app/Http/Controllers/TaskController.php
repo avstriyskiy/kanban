@@ -7,8 +7,10 @@ use App\Models\Task;
 use App\Models\Document;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Queue\RedisQueue;
 use Illuminate\Support\Facades\Storage;
 use DateTime;
+use PhpParser\Comment\Doc;
 
 class TaskController extends Controller
 {
@@ -27,10 +29,12 @@ class TaskController extends Controller
      */
     public function index()
     {
+        // Получаем данные по статусам для упрощения логики в виде
         $new = Task::where('status', 1)->get();
         $inWork = Task::where('status', 2)->get();
         $onVerify = Task::where('status', 3)->get();
         $ready = Task::where('status', 4)->get();
+
         return view('home', compact('ready', 'new', 'inWork', 'onVerify'));
     }
 
@@ -41,6 +45,7 @@ class TaskController extends Controller
      */
     public function create()
     {
+        // Получаем все категории для вывода их в форме
         $categories = Category::get();
 
         return view('form', compact('categories'));
@@ -55,10 +60,14 @@ class TaskController extends Controller
      */
     public function store(Request $request)
     {
+        // Получаем ID категории по названию из Request
         $categoryId = Category::where('name', '=', request()->category_name)->first()->id;
+
+        // Форматируем дату и время так, чтобы можно было внести данные в БД
         $deadline = new DateTime(request()->deadline);
         $deadline = $deadline->format('Y-m-d h:i:s');
 
+        // Записываем данные в БД
         $task = Task::create([
             'name' => request()->name,
             'description' => request()->description,
@@ -67,13 +76,17 @@ class TaskController extends Controller
             'category_id' => $categoryId,
         ]);
 
+        // Проверяем добавил ли пользователь файл при создании задачи
         if (request()->hasFile('doc'))
         {
+            // Сохраняем файл на сервере под исходным именем
             $fileName = $request->file('doc')->getClientOriginalName();
             $request->file('doc')->storeAs('/', $fileName);
 
+            // Записываем данные о файле в базу данных
             $task->attaches()->create([
-                    'file_name' => $fileName
+                    'file_name' => $fileName,
+                    'file_url' => Storage::url($fileName)
                 ]);
         }
 
@@ -91,14 +104,7 @@ class TaskController extends Controller
 
         $category = Category::find($task->category_id);
 
-        $files = [];
-        foreach ($task->attaches as $document)
-        {
-            $files[] = [
-                'url' => Storage::url($document->file_name),
-                'name' => $document->file_name
-            ];
-        }
+        $files = $task->attaches;
 
         $comments = $task->comments->sortByDesc('created_at');
 
@@ -134,6 +140,7 @@ class TaskController extends Controller
 
             $task->attaches()->create([
                 'file_name' => $fileName,
+                'file_url' => Storage::url($fileName)
             ]);
         }
 
@@ -160,22 +167,27 @@ class TaskController extends Controller
      */
     public function destroy(Task $task)
     {
+        // Удаляем все файлы задачи
         foreach ($task->attaches as $file){
             Storage::delete($file->file_name);
             Document::destroy($file->id);
         }
 
+        // Удаляем все комментарии задачи
+        $task->comments()->delete();
+
+        // Удаляем саму задачу
         Task::destroy($task->id);
 
         return redirect()->route('tasks.index');
     }
 
-    public function delete(Request $request, Task $task)
+    public function delete(Request $request, Task $task, Document $document)
     {
-        $file = Document::where('file_name', $request->file_name)->first();
+        $document = $task->attaches()->find($request->doc);
 
-        Storage::delete($file->file_name);
-        Document::destroy($file->id);
+        Storage::delete($document->file_name);
+        $document->delete();
 
         return redirect()->route('tasks.show', $task);
     }

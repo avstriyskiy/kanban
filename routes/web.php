@@ -25,7 +25,6 @@ Route::delete('/tasks/{task}/delete-comments', [TaskController::class, 'deleteCo
 
 // Маршруты для комментариев
 Route::post('/comments/{task}', [CommentController::class, 'create'])->name('comments.create');
-Route::patch('/comments/{task}', [CommentController::class, 'update'])->name('comments.update');
 Route::delete('/comments/{comment}', [CommentController::class, 'delete'])->name('comments.delete');
 
 // Redirect to tasks list

@@ -11,7 +11,7 @@ class Document extends Model
     protected $primaryKey = 'id';
 
     protected $fillable = [
-        'file_name', 'task_id'
+        'file_name', 'file_url'
     ];
 
     public function attached()
