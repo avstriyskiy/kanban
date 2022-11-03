@@ -29,30 +29,23 @@
             <input value="{{ isset($task) ? $task->deadline : null }}"
                 name="deadline" type="datetime-local" class="form-control" id="deadline">
         </div>
-            @if (!isset($task))
         <div class="mb-3">
             <label for="category" class="form-label">Исполнитель</label>
-            <select name="category_name" id="category" class="form-select">
-                @if (isset($task))
+            @if(!isset($task) or $user->category_id == 1)
+                <select name="category_name" id="category" class="form-select" {{ $user->category_id == 1 ? '' : 'disabled' }}>
                     @foreach ($categories as $category)
-                        @if ($category->id == $task->category_id)
                             <option>{{ $category->name }}</option>
-                            @break
+                    @endforeach
+            @else
+                <select name="category_name" id="category" class="form-select" disabled>
+                    @foreach ($categories as $category)
+                        @if ($category->id == $user->category_id)
+                            <option>{{ $category->name }}</option>
                         @endif
                     @endforeach
-                    @foreach ($categories as $category)
-                        @if ($category->id != $task->category_id)
-                            <option>{{ $category->name }}</option>
-                        @endif
-                    @endforeach
-                @else
-                    @foreach ($categories as $category)
-                        <option>{{ $category->name }}</option>
-                    @endforeach
-                @endif
+            @endif
             </select>
         </div>
-            @endif
         <div class="mb-3">
             <label for="file" class="form-label">Добавить файл к задаче</label>
             <input name="doc" class="form-control" type="file" id="file">

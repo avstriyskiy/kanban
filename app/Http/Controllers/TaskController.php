@@ -7,15 +7,13 @@ use App\Models\Task;
 use App\Models\Document;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Queue\RedisQueue;
 use Illuminate\Support\Facades\Storage;
 use DateTime;
-use PhpParser\Comment\Doc;
 
 class TaskController extends Controller
 {
     /**
-     *  Make an auth for pages
+     *  Make an auth
      */
     public function __construct()
     {
@@ -42,8 +40,7 @@ class TaskController extends Controller
         $onVerify = Task::whereRaw('status=3' . $condition)->get();
         $ready = Task::whereRaw('status=4' . $condition)->get();
 
-
-        return view('home', compact('ready', 'new', 'inWork', 'onVerify'));
+        return view('home', compact('ready', 'new', 'inWork', 'onVerify', 'user'));
     }
 
     /**
@@ -53,10 +50,16 @@ class TaskController extends Controller
      */
     public function create()
     {
-        // Получаем все категории для вывода их в форме
-        $categories = Category::get();
+        // Получаем нужные категории для создания задачи
+        $user = User::find(auth()->id());
 
-        return view('form', compact('categories'));
+        if ($user->category_id != 1){
+            $categories = Category::where('id', $user->category_id)->get();
+        } else {
+            $categories = Category::get();
+        }
+
+        return view('form', compact('categories', 'user'));
     }
 
     /**
@@ -122,7 +125,7 @@ class TaskController extends Controller
 
         $comments = $task->comments->sortByDesc('created_at');
 
-        return view('show', compact('task', 'category', 'files', 'comments'));
+        return view('show', compact('task', 'category', 'files', 'comments', 'user'));
     }
 
     /**
@@ -133,9 +136,12 @@ class TaskController extends Controller
      */
     public function edit(Task $task)
     {
+        // Получаем текущего юзера
+        $user = User::find(auth()->id());
+
         $categories = Category::get();
 
-        return view('form', compact('categories', 'task'));
+        return view('form', compact('categories', 'task', 'user'));
     }
 
     /**
