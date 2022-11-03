@@ -29,11 +29,19 @@ class TaskController extends Controller
      */
     public function index()
     {
-        // Получаем данные по статусам для упрощения логики в виде
-        $new = Task::where('status', 1)->get();
-        $inWork = Task::where('status', 2)->get();
-        $onVerify = Task::where('status', 3)->get();
-        $ready = Task::where('status', 4)->get();
+        // Проверяем текущего юзера, если админ, то выводим всё, если нет, то только то, что нужно
+        $user = User::find(auth()->id());
+        $condition = '';
+
+        if ($user->category_id != 1){
+            $condition = " AND category_id=$user->category_id";
+        }
+
+        $new = Task::whereRaw('status=1' . $condition)->get();
+        $inWork = Task::whereRaw('status=2' . $condition)->get();
+        $onVerify = Task::whereRaw('status=3' . $condition)->get();
+        $ready = Task::whereRaw('status=4' . $condition)->get();
+
 
         return view('home', compact('ready', 'new', 'inWork', 'onVerify'));
     }
@@ -101,6 +109,12 @@ class TaskController extends Controller
      */
     public function show(Task $task)
     {
+        // Проверка доступа к таску
+        $user = User::find(auth()->id());
+
+        if ($user->category_id != 1 && $task->category_id != $user->category_id){
+            abort(403, 'Вы не имеете доступа к просмотру этой задачи');
+        }
 
         $category = Category::find($task->category_id);
 
