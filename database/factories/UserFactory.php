@@ -22,13 +22,14 @@ class UserFactory extends Factory
      */
     public function definition()
     {
+        $category_id = random_int(1, 3);
+
         return [
             'name' => $this->faker->name,
             'email' => $this->faker->unique()->safeEmail,
-
-//            'email_verified_at' => now(),
-            'password' => 'qwerasdfg1', // password
+            'password' => 'qwerasdfg', // password
             'remember_token' => Str::random(10),
+            'category_id' => $category_id,
         ];
     }
 }

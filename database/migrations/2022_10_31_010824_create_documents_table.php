@@ -16,12 +16,11 @@ class CreateDocumentsTable extends Migration
         Schema::create('documents', function (Blueprint $table) {
             $table->id();
             $table->string('file_name');
+            $table->string('file_url');
+            $table->morphs('attached');
             $table->timestamps();
         });
 
-        Schema::table('documents', function (Blueprint $table) {
-            $table->foreignId('task_id')->constrained('tasks');
-        });
     }
 
     /**

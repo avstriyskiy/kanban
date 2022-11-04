@@ -54,6 +54,14 @@ class TaskController extends Controller
     public function create()
     {
 
+        $myDate = strtotime('20 November 2022 23:54:12');
+        $now = new DateTime(now(new \DateTimeZone('Europe/Moscow')));
+        $nowTimestamp = $now->getTimestamp();
+        $deadlineTimestamp = mt_rand($nowTimestamp, $myDate);
+        $deadline = new DateTime();
+        $deadline = $deadline->setTimestamp($deadlineTimestamp);
+
+
         // Получаем нужные категории для создания задачи
         $user = User::find(auth()->id());
 
@@ -199,6 +207,9 @@ class TaskController extends Controller
 
         // Удаляем все комментарии задачи
         $task->comments()->delete();
+
+        // Удаляем данные об отправке email о просрочке задачи
+        $task->mail()->delete();
 
         // Удаляем саму задачу
         Task::destroy($task->id);
