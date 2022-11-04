@@ -7,6 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use App\Models\Task;
+use App\Models\Mailed;
 
 class TaskOverdue extends Mailable
 {
@@ -31,6 +32,8 @@ class TaskOverdue extends Mailable
      */
     public function build()
     {
+
+
         return $this->from('taskoverdue@example.com', 'kanban.wtf')
             ->view('emails.taskoverdue')
             ->with([

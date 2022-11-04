@@ -53,8 +53,7 @@ class TaskController extends Controller
      */
     public function create()
     {
-        $task = Task::find(4);
-        Mail::to(User::find(auth()->id()))->send(new TaskOverdue($task));
+
         // Получаем нужные категории для создания задачи
         $user = User::find(auth()->id());
 
@@ -81,7 +80,7 @@ class TaskController extends Controller
 
         // Форматируем дату и время так, чтобы можно было внести данные в БД
         $deadline = new DateTime(request()->deadline);
-        $deadline = $deadline->format('Y-m-d h:i:s');
+        $deadline = $deadline->format('Y-m-d H:i:s');
 
         // Записываем данные в БД
         $task = Task::create([
@@ -172,7 +171,7 @@ class TaskController extends Controller
         if ($request->has('name') || $request->has('deadline') || $request->has('description')){
 
             $deadline = new DateTime(request()->deadline);
-            $deadline = $deadline->format('Y-m-d h:i:s');
+            $deadline = $deadline->format('Y-m-d H:i:s');
 
             $task->update([
                 'name' => request()->name,
@@ -238,35 +237,38 @@ class TaskController extends Controller
         return $date->format("d.m.Y H:i");
     }
 
-    public static function dateEqual($date): bool
+    public static function dateEqual($date, $today): bool
     {
-        $date = new DateTime($date);
-        $date = intval($date->format('j'));
-        $today = new DateTime(now());
-        $today = intval($today->format('j'));
-        if ($date == $today)
+        $date = $date->format('j');
+        $today = $today->format('j');
+
+        if (intval($date) == intval($today))
         {
             return True;
-        }
-        else
-        {
+        } else {
             return False;
         }
     }
 
     public static function isDeadline($deadline)
     {
-        if (TaskController::dateEqual($deadline)){
-            return 'today';
-        }
-        elseif ($deadline > now())
-        {
+        $deadline = new DateTime($deadline);
+        $today = new DateTime(now(new \DateTimeZone('Europe/Moscow')));
+
+        if ($deadline > $today){
+            if (TaskController::dateEqual($deadline, $today)){
+                return 'today';
+            }
             return 'yes';
-        }
-        else
-        {
+        } elseif (TaskController::dateEqual($deadline, $today)){
+            if ($deadline < $today){
+                return 'no';
+            }
+            return 'today';
+        } else {
             return 'no';
         }
+
     }
 
     public static function getStatusName($status){

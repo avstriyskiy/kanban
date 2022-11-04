@@ -4,17 +4,16 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Task;
+use App\Models\User;
 
-class Comment extends Model
+class Mailed extends Model
 {
-    use HasFactory;
-
-    protected $table = 'comments';
+    protected $table = 'mailed';
     protected $primaryKey = 'id';
     protected $guarded = [];
 
-    public function commentable()
-    {
+    public function mailable(){
         return $this->morphTo();
     }
 }

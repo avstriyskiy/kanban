@@ -40,4 +40,9 @@ class Task extends Model
     {
         return $this->morphMany(Comment::class, 'commentable');
     }
+
+    public function mail()
+    {
+        return $this->morphOne(Mailed::class, 'mailable');
+    }
 }
