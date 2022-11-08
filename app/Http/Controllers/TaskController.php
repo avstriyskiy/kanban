@@ -2,14 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Mail\TaskOverdue;
+use App\Http\Requests\StoreTaskRequest;
 use App\Models\Category;
 use App\Models\Task;
 use App\Models\Document;
 use App\Models\User;
-use App\Notifications\TaskNotification;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Mail;
+use Illuminate\Http\Response;
+use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Storage;
 use DateTime;
 
@@ -26,7 +28,7 @@ class TaskController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\Response
+     * @return Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\Response
      */
     public function index()
     {
@@ -49,19 +51,10 @@ class TaskController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\Response
+     * @return Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\Response
      */
     public function create()
     {
-
-        $myDate = strtotime('20 November 2022 23:54:12');
-        $now = new DateTime(now(new \DateTimeZone('Europe/Moscow')));
-        $nowTimestamp = $now->getTimestamp();
-        $deadlineTimestamp = mt_rand($nowTimestamp, $myDate);
-        $deadline = new DateTime();
-        $deadline = $deadline->setTimestamp($deadlineTimestamp);
-
-
         // Получаем нужные категории для создания задачи
         $user = User::find(auth()->id());
 
@@ -77,30 +70,30 @@ class TaskController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Http\Response|\Illuminate\Routing\Redirector
+     * @param StoreTaskRequest $request
+     * @return Application|RedirectResponse|Response|Redirector
      * @throws \Exception
      */
-    public function store(Request $request)
+    public function store(StoreTaskRequest $request)
     {
         // Получаем ID категории по названию из Request
-        $categoryId = Category::where('name', '=', request()->category_name)->first()->id;
+        $categoryId = Category::where('name', '=', $request->category_name)->first()->id;
 
         // Форматируем дату и время так, чтобы можно было внести данные в БД
-        $deadline = new DateTime(request()->deadline);
+        $deadline = new DateTime($request->deadline);
         $deadline = $deadline->format('Y-m-d H:i:s');
 
         // Записываем данные в БД
         $task = Task::create([
-            'name' => request()->name,
-            'description' => request()->description,
+            'name' => $request->name,
+            'description' => $request->description,
             'deadline' => $deadline,
             'status' => 1,
             'category_id' => $categoryId,
         ]);
 
         // Проверяем добавил ли пользователь файл при создании задачи
-        if (request()->hasFile('doc'))
+        if ($request->hasFile('doc'))
         {
             // Сохраняем файл на сервере под исходным именем
             $fileName = $request->file('doc')->getClientOriginalName();
@@ -119,8 +112,8 @@ class TaskController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Task  $task
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\Response
+     * @param Task $task
+     * @return Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\Response
      */
     public function show(Task $task)
     {
@@ -143,8 +136,8 @@ class TaskController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Task  $task
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\Response
+     * @param Task $task
+     * @return Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\Response
      */
     public function edit(Task $task)
     {
@@ -159,13 +152,14 @@ class TaskController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Task  $task
-     * @return \Illuminate\Http\RedirectResponse
+     * @param StoreTaskRequest $request
+     * @param Task $task
+     * @return RedirectResponse
+     * @throws \Exception
      */
     public function update(Request $request, Task $task)
     {
-        if (request()->hasFile('doc'))
+        if ($request->hasFile('doc'))
         {
             $fileName = $request->file('doc')->getClientOriginalName();
             $request->file('doc')->storeAs('/', $fileName);
@@ -178,12 +172,12 @@ class TaskController extends Controller
 
         if ($request->has('name') || $request->has('deadline') || $request->has('description')){
 
-            $deadline = new DateTime(request()->deadline);
+            $deadline = new DateTime($request->deadline);
             $deadline = $deadline->format('Y-m-d H:i:s');
 
             $task->update([
-                'name' => request()->name,
-                'description' => request()->description,
+                'name' => $request->name,
+                'description' => $request->description,
                 'deadline' => $deadline,
             ]);
         }
@@ -194,8 +188,8 @@ class TaskController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Task  $task
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Http\Response|\Illuminate\Routing\Redirector
+     * @param Task $task
+     * @return Application|\Illuminate\Http\RedirectResponse|\Illuminate\Http\Response|\Illuminate\Routing\Redirector
      */
     public function destroy(Task $task)
     {
@@ -237,7 +231,7 @@ class TaskController extends Controller
     public function change(Request $request, Task $task)
     {
         $task->update([
-            'status' => $this->getStatusNum(request()->status)
+            'status' => $this->getStatusNum($request->status)
         ]);
 
         return redirect()->route('tasks.index');

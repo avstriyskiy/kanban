@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreCommentRequest;
 use App\Models\Comment;
 use App\Models\Category;
 use App\Models\User;
@@ -12,7 +13,7 @@ use Illuminate\Http\Request;
 
 class CommentController extends Controller
 {
-    public function create(Request $request, Task $task)
+    public function create(StoreCommentRequest $request, Task $task)
     {
         $task->comments()->create([
            'body' => $request->body,

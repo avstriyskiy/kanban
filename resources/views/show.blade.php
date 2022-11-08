@@ -61,6 +61,11 @@
                                             <div class="mb-3">
                                                 <input name="doc" class="form-control" type="file" id="file">
                                             </div>
+                                            @if ($errors->first('doc'))
+                                                <div class="alert alert-danger mt-2" role="alert">
+                                                    {{$errors->first('doc')}}
+                                                </div>
+                                            @endif
                                             <button type="submit" class="btn btn-outline-secondary">Добавить</button>
                                         </form>
                                     </div>
@@ -119,6 +124,11 @@
                 <div class="card-body">
                     <div class="container">
                         <a  class="btn btn-outline-dark" data-bs-toggle="collapse" href="#add_comment" role="button" aria-expanded="false">Добавить комментарий</a>
+                        @if ($errors->first('body'))
+                            <div class="alert alert-danger mt-2" role="alert">
+                                {{$errors->first('body')}}
+                            </div>
+                        @endif
                         <div class="collapse" id="add_comment">
                             <div class="card card-body mt-2">
                                 <form method="POST" action="{{ route('comments.create', $task) }}">
