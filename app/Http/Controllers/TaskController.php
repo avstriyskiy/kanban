@@ -33,20 +33,23 @@ class TaskController extends Controller
     public function index()
     {
         // Проверяем текущего юзера, если админ, то выводим всё, если нет, то только то, что нужно
-        $user = User::find(auth()->id());
-        $condition = '';
+        $all_tasks = [];
 
-        if ($user->category_id != 1){
-            $condition = " AND category_id=$user->category_id";
+        foreach (Task::STATUSES_NUM as $status){
+
+            $query = Task::query()->where('status', '=', $status);
+
+            if (\Auth::user()->category_id != 1){
+                $query->where('category_id', '=', \Auth::user()->category_id);
+            }
+
+            $all_tasks[$status] = $query->get();
         }
 
-        $new = Task::whereRaw('status=1' . $condition)->get();
-        $inWork = Task::whereRaw('status=2' . $condition)->get();
-        $onVerify = Task::whereRaw('status=3' . $condition)->get();
-        $ready = Task::whereRaw('status=4' . $condition)->get();
 
-        return view('home', compact('ready', 'new', 'inWork', 'onVerify', 'user'));
+        return view('home', compact('all_tasks'));
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -141,12 +144,9 @@ class TaskController extends Controller
      */
     public function edit(Task $task)
     {
-        // Получаем текущего юзера
-        $user = User::find(auth()->id());
-
         $categories = Category::get();
 
-        return view('form', compact('categories', 'task', 'user'));
+        return view('form', compact('categories', 'task'));
     }
 
     /**
@@ -202,16 +202,23 @@ class TaskController extends Controller
         // Удаляем все комментарии задачи
         $task->comments()->delete();
 
-        // Удаляем данные об отправке email о просрочке задачи
+        // Удаляем данные об отправке email о просрочке задачи для экономии места в базе
         $task->mail()->delete();
 
         // Удаляем саму задачу
-        Task::destroy($task->id);
+        $task->delete();
 
         return redirect()->route('tasks.index');
     }
 
-    public function delete(Request $request, Task $task, Document $document)
+    /**
+     * Удаление документа у задачи
+     *
+     * @param Request $request
+     * @param Task $task
+     * @return RedirectResponse
+     */
+    public function delete(Request $request, Task $task)
     {
         $document = $task->attaches()->find($request->doc);
 
@@ -221,6 +228,13 @@ class TaskController extends Controller
         return redirect()->route('tasks.show', $task);
     }
 
+    /**
+     * Удаление всех комментариев у задачи
+     *
+     * @param Request $request
+     * @param Task $task
+     * @return RedirectResponse
+     */
     public function deleteComments (Request $request, Task $task)
     {
         $task->comments()->delete();
@@ -228,67 +242,19 @@ class TaskController extends Controller
         return redirect()->route('tasks.show', $task);
     }
 
+    /**
+     * Изменение статуса задачи
+     *
+     * @param Request $request
+     * @param Task $task
+     * @return RedirectResponse
+     */
     public function change(Request $request, Task $task)
     {
         $task->update([
-            'status' => $this->getStatusNum($request->status)
+            'status' => Task::STATUSES_NUM[$request->status]
         ]);
 
         return redirect()->route('tasks.index');
-    }
-
-    public static function dateFormat($date){
-        $date = new DateTime($date);
-        return $date->format("d.m.Y H:i");
-    }
-
-    public static function dateEqual($date, $today): bool
-    {
-        $date = $date->format('j');
-        $today = $today->format('j');
-
-        if (intval($date) == intval($today))
-        {
-            return True;
-        } else {
-            return False;
-        }
-    }
-
-    public static function isDeadline($deadline)
-    {
-        $deadline = new DateTime($deadline);
-        $today = new DateTime(now(new \DateTimeZone('Europe/Moscow')));
-
-        if ($deadline > $today){
-            if (TaskController::dateEqual($deadline, $today)){
-                return 'today';
-            }
-            return 'yes';
-        } elseif (TaskController::dateEqual($deadline, $today)){
-            if ($deadline < $today){
-                return 'no';
-            }
-            return 'today';
-        } else {
-            return 'no';
-        }
-
-    }
-
-    public static function getStatusName($status){
-        $statusName = [1 => 'Новое', 2 => 'В работе', 3 => 'На проверке', 4 => 'Готово'];
-        return $statusName[$status];
-    }
-
-    public static function getStatusNum($status){
-        $statusNum = ['Новое' => 1, 'В работе' => 2, 'На проверке' => 3, 'Готово' => 4];
-        return $statusNum[$status];
-    }
-
-    public static function getUserName($comment)
-    {
-        $user = User::find($comment->user_id);
-        return $user->name;
     }
 }

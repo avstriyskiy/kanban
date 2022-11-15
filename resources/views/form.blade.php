@@ -46,15 +46,15 @@
         </div>
         <div class="mb-3">
             <label for="category" class="form-label">Исполнитель</label>
-            @if(!isset($task) or $user->category_id == 1)
-                <select name="category_name" id="category" class="form-select" {{ $user->category_id == 1 ? '' : 'disabled' }}>
+            @if(!isset($task) or \Auth::user()->category_id == 1)
+                <select name="category_name" id="category" class="form-select" {{ \Auth::user()->category_id == 1 ? '' : 'disabled' }}>
                     @foreach ($categories as $category)
                             <option>{{ $category->name }}</option>
                     @endforeach
             @else
                 <select name="category_name" id="category" class="form-select" disabled>
                     @foreach ($categories as $category)
-                        @if ($category->id == $user->category_id)
+                        @if ($category->id == \Auth::user()->category_id)
                             <option>{{ $category->name }}</option>
                         @endif
                     @endforeach

@@ -227,6 +227,7 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         'Home' => \App\Http\Controllers\TaskController::class,
+        'Task' => \App\Models\Task::class,
 
     ],
 
