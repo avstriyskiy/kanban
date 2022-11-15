@@ -11,14 +11,14 @@
                 <div class="card">
                     <div class="card-body">
                         {{ $task->name }}
-                        @if (Task::isDeadline($task->deadline) == 'today')
+                        @if (Home::isDeadline($task->deadline) == 'today')
                             <div class="text-bg-warning" style="margin-top: 1rem">
-                        @elseif(Task::isDeadline($task->deadline) == 'yes')
+                        @elseif(Home::isDeadline($task->deadline) == 'yes')
                             <div class="text-bg-success" style="margin-top: 1rem">
                         @else
                             <div class="text-bg-danger" style="margin-top: 1rem">
                         @endif
-                            Контрольный срок: {{ Task::dateFormat($task->deadline) }}
+                            Контрольный срок: {{ Home::dateFormat($task->deadline) }}
                             </div>
                         <br>
 {{--                Кнопка удаления--}}
