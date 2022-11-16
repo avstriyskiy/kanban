@@ -3,10 +3,8 @@
 namespace Database\Factories;
 
 use App\Models\Task;
-use DateTime;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
-use Ramsey\Uuid\Type\Integer;
 
 class TaskFactory extends Factory
 {
@@ -28,18 +26,16 @@ class TaskFactory extends Factory
 
         $category_id = random_int(1, 3);
 
-        $myDate = strtotime('20 November 2022 23:54:12');
-        $now = new DateTime(now(new \DateTimeZone('Europe/Moscow')));
-        $nowTimestamp = $now->getTimestamp();
-        $deadlineTimestamp = mt_rand($nowTimestamp, $myDate);
-        $deadline = new DateTime();
-        $deadline = $deadline->setTimestamp($deadlineTimestamp);
+        $today = Carbon::now('Europe/Moscow');
+        $weekAfter = Carbon::now('Europe/Moscow')->addWeek();
+        $diff = mt_rand($today->timestamp, $weekAfter->timestamp);
+        $deadline = Carbon::createFromTimestamp($diff);
 
         return [
             'name' => $array_of_names[$category_id],
             'description' => 'Описание',
             'status' => random_int(1, 4),
-            'deadline' => $deadline->format('Y-m-d H-m-s'),
+            'deadline' => $deadline,
             'category_id' => $category_id,
         ];
     }
