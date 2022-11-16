@@ -55,10 +55,10 @@
                                             <h5>Файлы задачи:</h5>
                                         </div>
                                         <div class="col">
-                                            <form method="POST" action="{{ route('tasks.update', $task) }}"
+                                            <form method="POST" action="{{ route('document.store', $task) }}"
                                                   enctype="multipart/form-data">
                                                 @csrf
-                                                @method('PATCH')
+                                                @method('POST')
                                                 <div class="mb-3">
                                                     <input name="doc" class="form-control" type="file" id="file">
                                                 </div>

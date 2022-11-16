@@ -12,7 +12,7 @@ class Document extends Model
     protected $primaryKey = 'id';
 
     protected $fillable = [
-        'file_name', 'file_url'
+        'filename', 'filesize', 'filepath'
     ];
 
     public function attached()
@@ -30,13 +30,14 @@ class Document extends Model
     public static function saveFile($file, $model, string $path){
 
         $fileName = $file->getClientOriginalName();
-
         $file->storeAs($path, $fileName);
+        $fileSize = Storage::size($fileName);
+        $filePath = Storage::path($fileName);
 
         $model->attaches()->create([
             'filename' => $fileName,
-            'filepath' => Storage::path($file),
-            'filesize' => Storage::size($file),
+            'filepath' => $filePath,
+            'filesize' => $fileSize,
         ]);
     }
 

@@ -59,15 +59,13 @@ class TaskController extends Controller
     public function create()
     {
         // Получаем нужные категории для создания задачи
-        $user = User::find(auth()->id());
-
-        if ($user->category_id != 1){
-            $categories = Category::where('id', $user->category_id)->get();
+        if (\Auth::user()->category_id != 1){
+            $categories = Category::where('id', \Auth::user()->category_id)->get();
         } else {
             $categories = Category::get();
         }
 
-        return view('form', compact('categories', 'user'));
+        return view('form', compact('categories'));
     }
 
     /**

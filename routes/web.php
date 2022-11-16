@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\TaskController;
 use Illuminate\Support\Facades\Route;
 
@@ -26,6 +27,9 @@ Route::delete('/tasks/{task}/delete-comments', [TaskController::class, 'deleteCo
 // Маршруты для комментариев
 Route::post('/comments/{task}', [CommentController::class, 'create'])->name('comments.create');
 Route::delete('/comments/{comment}', [CommentController::class, 'delete'])->name('comments.delete');
+
+// Маршруты для файлов
+Route::post('/doc/{task}', [DocumentController::class, 'store'])->name('document.store');
 
 // Redirect to tasks list
 Route::redirect('/', route('tasks.index'));

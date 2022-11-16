@@ -17,7 +17,7 @@ class CreateDocumentsTable extends Migration
             $table->id();
             $table->string('filename');
             $table->string('filepath');
-            $table->string('filesize');
+            $table->bigInteger('filesize');
             $table->morphs('attached');
             $table->timestamps();
         });
