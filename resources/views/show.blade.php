@@ -72,8 +72,8 @@
                                             </form>
                                         </div>
                                     </div>
-                                    @if (isset($files))
-                                        @foreach($files as $file)
+                                    @if ($task->attaches())
+                                        @foreach($task->attaches() as $file)
                                             <div class="row mt-2">
                                                 <form method="POST" action="{{ route('tasks.delete', $task) }}">
                                                     @csrf
@@ -106,7 +106,7 @@
                         </div>
                         <div class="card-footer text-muted text-center">
                             <form method="POST" action="{{ route('tasks.destroy', $task) }}">
-                                @if ($user->category_id == 1)
+                                @if (\Auth::user()->category_id == 1)
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-outline-secondary position-relative">
@@ -168,7 +168,7 @@
                                                     </div>
                                                     <div class="col">
                                                         <p class="mb-0 mt-3">{{ Task::dateFormat($comment->created_at) }}</p>
-                                                        @if ($user->category_id == 1 or $comment->user_id == $user->id)
+                                                        @if (\Auth::user()->category_id == 1 or $comment->user_id == \Auth::user()->id)
                                                             <form method="POST"
                                                                   action="{{ route('comments.delete', $comment) }}">
                                                                 @csrf
@@ -194,7 +194,7 @@
                             </div>
                         </div>
                         <div class="card-footer text-muted text-center">
-                            @if($user->category_id == 1)
+                            @if(\Auth::user()->category_id == 1)
                                 <form method="POST" action="{{ route('tasks.deleteComments', $task) }}">
                                     @csrf
                                     @method('DELETE')

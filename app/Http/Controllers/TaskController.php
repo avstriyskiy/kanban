@@ -98,15 +98,8 @@ class TaskController extends Controller
         // Проверяем добавил ли пользователь файл при создании задачи
         if ($request->hasFile('doc'))
         {
-            // Сохраняем файл на сервере под исходным именем
-            $fileName = $request->file('doc')->getClientOriginalName();
-            $request->file('doc')->storeAs('/', $fileName);
-
-            // Записываем данные о файле в базу данных
-            $task->attaches()->create([
-                    'file_name' => $fileName,
-                    'file_url' => Storage::url($fileName)
-                ]);
+            // Сохраняем полученный файл
+            Document::saveFile($request->file('doc'), $task, '/');
         }
 
         return redirect()->route('tasks.index');
@@ -120,20 +113,16 @@ class TaskController extends Controller
      */
     public function show(Task $task)
     {
-        // Проверка доступа к таску
-        $user = User::find(auth()->id());
-
-        if ($user->category_id != 1 && $task->category_id != $user->category_id){
+//        dd($task->attaches());
+        if (\Auth::user()->category_id != 1 && $task->category_id != \Auth::user()->category_id){
             abort(403, 'Вы не имеете доступа к просмотру этой задачи');
         }
 
         $category = Category::find($task->category_id);
 
-        $files = $task->attaches;
-
         $comments = $task->comments->sortByDesc('created_at');
 
-        return view('show', compact('task', 'category', 'files', 'comments', 'user'));
+        return view('show', compact('task', 'category', 'comments'));
     }
 
     /**
@@ -157,17 +146,11 @@ class TaskController extends Controller
      * @return RedirectResponse
      * @throws \Exception
      */
-    public function update(Request $request, Task $task)
+    public function update(StoreTaskRequest $request, Task $task)
     {
         if ($request->hasFile('doc'))
         {
-            $fileName = $request->file('doc')->getClientOriginalName();
-            $request->file('doc')->storeAs('/', $fileName);
-
-            $task->attaches()->create([
-                'file_name' => $fileName,
-                'file_url' => Storage::url($fileName)
-            ]);
+            Document::saveFile($request->file('doc'), $task, '/');
         }
 
         if ($request->has('name') || $request->has('deadline') || $request->has('description')){
@@ -194,10 +177,7 @@ class TaskController extends Controller
     public function destroy(Task $task)
     {
         // Удаляем все файлы задачи
-        foreach ($task->attaches as $file){
-            Storage::delete($file->file_name);
-            Document::destroy($file->id);
-        }
+        Document::deleteAllFiles($task);
 
         // Удаляем все комментарии задачи
         $task->comments()->delete();
@@ -220,10 +200,7 @@ class TaskController extends Controller
      */
     public function delete(Request $request, Task $task)
     {
-        $document = $task->attaches()->find($request->doc);
-
-        Storage::delete($document->file_name);
-        $document->delete();
+        Document::deleteFile($task, $request->doc);
 
         return redirect()->route('tasks.show', $task);
     }

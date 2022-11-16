@@ -55,8 +55,11 @@
                                     @csrf
                                     @method('PUT')
                                     <select name="status" id="category" class="form-select">
+                                        <option>{{ Task::STATUSES[$task->status]  }}</option>
                                         @foreach(Task::STATUSES as $status)
-                                            <option>{{ $status }}</option>
+                                            @if ($status != Task::STATUSES[$task->status])
+                                                <option>{{ $status }}</option>
+                                            @endif
                                         @endforeach
                                     </select>
                                     <button type="submit" class="btn btn-outline-dark mt-2">Принять</button>
