@@ -2,12 +2,9 @@
 
 namespace App\Models;
 
-use App\Http\Controllers\TaskController;
-use DateTime;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Date;
 
 class Task extends Model
 {

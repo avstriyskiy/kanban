@@ -20,7 +20,7 @@ class DatabaseSeeder extends Seeder
             for ($i = 1; $i <= 3; $i++){
                 if ($i == 1){
                     $name = 'Администратор';
-                    $description = 'Пользователь с полным доступом';
+                    $description = 'Пользователи с полным доступом';
                 } elseif ($i == 2){
                     $name = 'Менеджер';
                     $description = 'Сотрудники - менеджеры';
@@ -37,6 +37,6 @@ class DatabaseSeeder extends Seeder
 
         Task::factory(15)->create();
 
-        User::factory(20)->create();
+//        User::factory(20)->create();
     }
 }
