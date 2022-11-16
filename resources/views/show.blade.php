@@ -72,8 +72,7 @@
                                             </form>
                                         </div>
                                     </div>
-                                    @if ($task->attaches())
-                                        @foreach($task->attaches() as $file)
+                                        @foreach($task->attaches as $file)
                                             <div class="row mt-2">
                                                 <form method="POST" action="{{ route('tasks.delete', $task) }}">
                                                     @csrf
@@ -81,11 +80,11 @@
                                                     <a class="btn btn-outline-secondary" data-bs-toggle="collapse"
                                                        href="#doc_{{ $file->id }}" role="button" aria-expanded="false"
                                                        aria-controls="collapseExample">
-                                                        {{ $file->file_name }}
+                                                        {{ $file->filename }}
                                                     </a>
                                                     <div class="collapse" id="doc_{{ $file->id }}">
                                                         <div class="card card-body">
-                                                            <img src="{{ $file->file_url }}" alt="" class="w-50 h-25">
+                                                            <img src="{{ Storage::url($file->filename) }}" alt="" class="w-50 h-25">
                                                         </div>
                                                     </div>
                                                     <button type="submit" class="btn btn-outline-secondary">
@@ -101,7 +100,6 @@
                                                 </form>
                                             </div>
                                         @endforeach
-                                    @endif
                             </div>
                         </div>
                         <div class="card-footer text-muted text-center">
