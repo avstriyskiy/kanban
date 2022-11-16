@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreDocumentRequest;
 use App\Models\Document;
 use App\Models\Task;
-use Illuminate\Http\Request;
 
 class DocumentController extends Controller
 {

@@ -6,13 +6,12 @@ use App\Http\Requests\StoreTaskRequest;
 use App\Models\Category;
 use App\Models\Task;
 use App\Models\Document;
-use App\Models\User;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Redirector;
-use Illuminate\Support\Facades\Storage;
+use Carbon\Carbon;
 use DateTime;
 
 class TaskController extends Controller
@@ -81,14 +80,14 @@ class TaskController extends Controller
         $categoryId = Category::where('name', '=', $request->category_name)->first()->id;
 
         // Форматируем дату и время так, чтобы можно было внести данные в БД
-        $deadline = new DateTime($request->deadline);
-        $deadline = $deadline->format('Y-m-d H:i:s');
+        $deadline = new Carbon($request->deadline);
+
 
         // Записываем данные в БД
         $task = Task::create([
             'name' => $request->name,
             'description' => $request->description,
-            'deadline' => $deadline,
+            'deadline' => $deadline->toDateTimeString(),
             'status' => 1,
             'category_id' => $categoryId,
         ]);

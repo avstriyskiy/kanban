@@ -6,6 +6,7 @@ use App\Http\Controllers\TaskController;
 use DateTime;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Date;
 
 class Task extends Model
@@ -59,42 +60,21 @@ class Task extends Model
 
 
     public static function dateFormat($date){
-        $date = new DateTime($date);
+        $date = new Carbon($date);
         return $date->format("d.m.Y H:i");
-    }
-
-    public static function dateEqual($date, $today): bool
-    {
-        $date = $date->format('j');
-        $today = $today->format('j');
-
-        if (intval($date) == intval($today))
-        {
-            return True;
-        } else {
-            return False;
-        }
     }
 
     public static function isDeadline($deadline)
     {
-        $deadline = new DateTime($deadline);
-        $today = new DateTime(now(new \DateTimeZone('Europe/Moscow')));
-
-        if ($deadline > $today){
-            if (Task::dateEqual($deadline, $today)){
+        $deadline = new Carbon($deadline, 'Europe/Moscow');
+        $today = Carbon::now('Europe/Moscow');
+        if ($deadline < $today) {
+            return 'no';
+        } elseif ($deadline > $today) {
+            if ($deadline->toDateString() == $today->toDateString()) {
                 return 'today';
             }
             return 'yes';
-        } elseif (Task::dateEqual($deadline, $today)){
-            if ($deadline < $today){
-                return 'no';
-            }
-            return 'today';
-        } else {
-            return 'no';
         }
-
     }
-
 }

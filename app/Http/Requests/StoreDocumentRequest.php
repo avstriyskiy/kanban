@@ -31,7 +31,15 @@ class StoreDocumentRequest extends FormRequest
     public function messages()
     {
         return [
-            'doc.mimes' => 'Загружаемый файл может быть только форматов .docx, .bmp, .png, .jpg, .pdf'
+            'doc.mimes' => ':attribute может быть только форматов .docx, .bmp, .png, .jpg, .pdf',
+            'doc.size' => ':attribute не может превышать 10MB'
+        ];
+    }
+
+    public function attributes()
+    {
+        return [
+            'doc' => 'Загружаемый файл'
         ];
     }
 }

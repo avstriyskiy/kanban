@@ -50,8 +50,7 @@ class Document extends Model
     public static function deleteFile($model, $file){
 
         $document = $model->attaches()->find($file);
-
-        Storage::delete($document->file_name);
+        Storage::delete($document->filename);
         $document->delete();
     }
 
@@ -62,7 +61,7 @@ class Document extends Model
      */
     public static function deleteAllFiles($model){
         foreach ($model->attaches() as $file){
-            Storage::delete($file->name);
+            Storage::delete($file->filename);
             Document::destroy($file->id);
         }
     }
