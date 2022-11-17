@@ -32,8 +32,6 @@ class TaskOverdue extends Mailable
      */
     public function build()
     {
-
-
         return $this->from('taskoverdue@example.com', 'kanban.wtf')
             ->view('emails.taskoverdue')
             ->with([

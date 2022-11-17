@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreTaskRequest;
+use App\Mail\TaskOverdue;
 use App\Models\Category;
 use App\Models\Task;
 use App\Models\Document;
+use App\Models\User;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -13,6 +15,7 @@ use Illuminate\Http\Response;
 use Illuminate\Routing\Redirector;
 use Carbon\Carbon;
 use DateTime;
+use Illuminate\Support\Facades\Mail;
 
 class TaskController extends Controller
 {

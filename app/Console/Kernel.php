@@ -3,6 +3,7 @@
 namespace App\Console;
 
 use App\Models\User;
+use Carbon\Carbon;
 use DateTime;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
@@ -41,8 +42,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->call(function(){
-            $now = new DateTime(now(new \DateTimeZone('Europe/Moscow')));
-            $now = $now->format('Y-m-d H-i-s');
+            $now = Carbon::now('Europe/Moscow')->toDateTimeString();
             $task = Task::whereRaw("deadline<='$now'")->get();
 
             foreach($task as $overdue) {
