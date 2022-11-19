@@ -37,4 +37,4 @@ Route::resource('users', UserController::class);
 
 // Home page with redirects
 //Route::get('/', view('main_page'))->name('main_page');
-Route::view('/', 'main_page')->name('main_page');
+Route::view('/', 'main_page')->name('main_page')->middleware('auth');
