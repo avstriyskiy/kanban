@@ -48,7 +48,6 @@ class TaskController extends Controller
             $all_tasks[$status] = $query->get();
         }
 
-
         return view('home', compact('all_tasks'));
     }
 
