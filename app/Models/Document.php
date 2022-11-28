@@ -60,7 +60,7 @@ class Document extends Model
      * @return void
      */
     public static function deleteAllFiles($model){
-        foreach ($model->attaches() as $file){
+        foreach ($model->attaches as $file){
             Storage::delete($file->filename);
             Document::destroy($file->id);
         }

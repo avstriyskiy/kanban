@@ -23,17 +23,7 @@ class UserController extends Controller
     public function index()
     {
 
-        return view('index');
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        return view('dictionary');
     }
 
     /**

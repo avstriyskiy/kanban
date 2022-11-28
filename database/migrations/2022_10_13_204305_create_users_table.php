@@ -20,12 +20,9 @@ class CreateUsersTable extends Migration
             $table->string('name');
             $table->string('password');
             $table->string('email');
+            $table->string('position')->nullable();
             $table->string('remember_token')->nullable();
             $table->timestamps();
-        });
-
-        Schema::table('users', function (Blueprint $table) {
-
         });
     }
 
