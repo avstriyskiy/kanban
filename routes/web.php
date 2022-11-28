@@ -33,7 +33,7 @@ Route::delete('/comments/{comment}', [CommentController::class, 'delete'])->name
 Route::post('/doc/{task}', [DocumentController::class, 'store'])->name('document.store');
 
 // Маршруты для справочника
-Route::resource('users', UserController::class);
+Route::resource('guide', UserController::class);
 
 // Home page with redirects
 //Route::get('/', view('main_page'))->name('main_page');

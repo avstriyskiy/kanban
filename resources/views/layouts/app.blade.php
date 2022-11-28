@@ -37,7 +37,7 @@
                             <a class="nav-link" href="{{ route('main_page') }}">Главная<span class="sr-only"></span></a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Справочник</a>
+                            <a class="nav-link" href="{{ route('guide.index') }}">Справочник</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('tasks.index') }}">Канбан</a>

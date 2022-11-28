@@ -79,7 +79,11 @@ class TaskController extends Controller
     public function store(StoreTaskRequest $request)
     {
         // Получаем ID категории по названию из Request
-        $categoryId = Category::where('name', '=', $request->category_name)->first()->id;
+        if ($request->has('category_name')){
+            $categoryId = Category::where('name', '=', $request->category_name)->first()->id;
+        } else {
+            $categoryId = \Auth::user()->category_id;
+        }
 
         // Форматируем дату и время так, чтобы можно было внести данные в БД
         $deadline = new Carbon($request->deadline);

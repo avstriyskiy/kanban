@@ -10,4 +10,5 @@ class Category extends Model
     protected $table = 'categories';
     protected $primaryKey = 'id';
     use HasFactory;
+
 }

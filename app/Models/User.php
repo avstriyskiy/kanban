@@ -41,11 +41,11 @@ class User extends Authenticatable
     ];
 
     public function department(){
-        return $this->hasOne(Department::class);
+        return $this->belongsTo(Department::class);
     }
 
     public function category(){
-        return $this->hasOne(Category::class);
+        return $this->belongsTo(Category::class);
     }
 
     public function image(){

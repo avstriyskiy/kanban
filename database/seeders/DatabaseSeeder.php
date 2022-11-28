@@ -20,13 +20,13 @@ class DatabaseSeeder extends Seeder
         if (!Category::find(1)){
             for ($i = 1; $i <= 3; $i++){
                 if ($i == 1){
-                    $name = 'Администратор';
+                    $name = 'Руководители';
                     $description = 'Пользователи с полным доступом';
                 } elseif ($i == 2){
-                    $name = 'Менеджер';
+                    $name = 'Менеджеры';
                     $description = 'Сотрудники - менеджеры';
                 } else {
-                    $name = 'Разработчик';
+                    $name = 'Разработчики';
                     $description = 'Сотрудники - разработчики';
                 }
                 Category::create([

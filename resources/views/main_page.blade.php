@@ -6,7 +6,7 @@
             <div class="card">
                 <div class="card card-body text-center">
                     <h4>Справочник пользователей</h4>
-                    <a href="{{ route('users.index') }}" class="btn btn-outline-dark mx-auto mt-2">Перейти</a>
+                    <a href="{{ route('guide.index') }}" class="btn btn-outline-dark mx-auto mt-2">Перейти</a>
                 </div>
             </div>
         </div>
