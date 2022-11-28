@@ -41,33 +41,44 @@ class DatabaseSeeder extends Seeder
                 if ($i == 1){
                     $name = 'Отдел разработки';
                     $description = 'Разработчики';
+                    $category_id = 3;
+                    $parent_id = 0;
                 } elseif ($i == 2){
                     $name = 'Административный департамент';
                     $description = 'Всякие разные руководители административные';
+                    $category_id = 1;
+                    $parent_id = 0;
                 } elseif ($i == 3) {
                     $name = 'Отдел продаж';
                     $description = 'Сотрудники - продажники';
+                    $category_id = 2;
+                    $parent_id = 0;
                 } elseif ($i == 4){
                     $name = 'Группа продаж №1';
                     $description = 'Первая группа отдела продаж';
+                    $category_id = 2;
                     $parent_id = 3;
                 } elseif ($i == 5) {
                     $name = 'Группа продаж №2';
                     $description = 'Вторая группа отдела продаж';
+                    $category_id = 2;
                     $parent_id = 3;
                 } elseif ($i == 6) {
                     $name = 'Разработчики на PHP';
                     $description = 'Сотрудники - разработчики на ПХП';
+                    $category_id = 3;
                     $parent_id = 1;
                 } elseif ($i == 7) {
                     $name = 'Разработчики на С++';
                     $description = 'Сотрудники - разработчики на плюсах';
+                    $category_id = 3;
                     $parent_id = 1;
                 }
                 Department::create([
                     'name' => $name,
                     'description' => $description,
                     'parent_id' => $parent_id,
+                    'category_id' => $category_id,
                 ]);
             }
         }

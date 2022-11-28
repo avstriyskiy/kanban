@@ -1,25 +1,20 @@
 <?php
 
-namespace App\Models;
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-
-class Image extends Model
+class UpdateUsersTable extends Migration
 {
-    use HasFactory;
-
-    protected $guarded = [];
-
-    public function imageable()
-    {
-        return $this->morphTo();
-    }
-
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->foreignId('department_id')->default(1)->constrained('department');
+            $table->foreignId('department_id')->default(1)->constrained('departments');
         });
     }
 
