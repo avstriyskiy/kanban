@@ -40,7 +40,15 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function getCategory(){
-        return $this->hasOne(Category::class, 'id', 'category_id');
+    public function department(){
+        return $this->hasOne(Department::class);
+    }
+
+    public function category(){
+        return $this->hasOne(Category::class);
+    }
+
+    public function image(){
+        return $this->morphOne(Image::class, 'imageable');
     }
 }
