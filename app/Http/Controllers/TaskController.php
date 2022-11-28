@@ -116,7 +116,6 @@ class TaskController extends Controller
      */
     public function show(Task $task)
     {
-//        dd($task->attaches());
         if (\Auth::user()->category_id != 1 && $task->category_id != \Auth::user()->category_id){
             abort(403, 'Вы не имеете доступа к просмотру этой задачи');
         }

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
+use App\Models\Department;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -24,9 +26,21 @@ class UserController extends Controller
     {
         $users = User::paginate(20);
 
-        return view('dictionary', compact('users'));
+        return view('/guide/dictionary', compact('users'));
     }
 
+    public function create()
+    {
+        $parentDepartments = Department::getParentDepartments();
+        $daughterDepartments = Department::getDaughterDepartments();
+        $categories = Category::getAllCategories();
+
+        return view('guide/form', [
+            'daughterDepartments' => $daughterDepartments,
+            'parentDepartments' => $parentDepartments,
+            'categories' => $categories,
+        ]);
+    }
     /**
      * Store a newly created resource in storage.
      *
@@ -46,7 +60,9 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        //
+
+
+//        return view('show', compact(''));
     }
 
     /**
@@ -76,10 +92,12 @@ class UserController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\User  $user
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function destroy(User $user)
+    public function destroy($user)
     {
-        //
+        User::find($user)->delete();
+
+        return redirect(route('guide.index'));
     }
 }

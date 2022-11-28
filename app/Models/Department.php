@@ -14,4 +14,37 @@ class Department extends Model
     public function category(){
         return $this->hasOne(Category::class);
     }
+
+    public static function getAllDepartments(){
+        $departments = [];
+        $all_data = Department::all();
+
+        foreach ($all_data as $department){
+            $departments[] = $department->name;
+        }
+
+        return $departments;
+    }
+
+    public static function getDaughterDepartments(){
+        $departments = [];
+        $all_data = Department::where('parent_id', '>' , 0)->get();
+
+        foreach ($all_data as $department){
+            $departments[] = $department->name;
+        }
+
+        return $departments;
+    }
+
+    public static function getParentDepartments(){
+        $departments = [];
+        $all_data = Department::where('parent_id', '=' , 0)->get();
+
+        foreach ($all_data as $department){
+            $departments[] = $department->name;
+        }
+
+        return $departments;
+    }
 }

@@ -11,4 +11,14 @@ class Category extends Model
     protected $primaryKey = 'id';
     use HasFactory;
 
+    public static function getAllCategories(){
+        $categories = [];
+        $all_data = Category::all();
+
+        foreach ($all_data as $category){
+            $categories[] = $category->name;
+        }
+
+        return $categories;
+    }
 }
